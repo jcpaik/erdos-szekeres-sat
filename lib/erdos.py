@@ -161,6 +161,28 @@ def etv_ax5(n, a, b, m):
 
     return etvp
 
+
+def etv_semisimple(n, a, b, m):
+    etvp = etv(n, a, b, m, flip_cup=True)
+    v = etvp.v
+    for i, j, k, l in subsets(m, 4):
+        p = v[(i, j, k)]
+        q = v[(i, j, l)]
+        r = v[(i, k, l)]
+        s = v[(j, k, l)]
+
+        etvp.add_implies(q & s, r)
+        etvp.add_implies(p & r, q)
+        etvp.add_implies(~q & ~s, ~r)
+        etvp.add_implies(~p & ~r, ~q)
+
+        etvp.add_implies(p & ~q & s, ~r)
+        etvp.add_implies(p & ~r & s, ~q)
+        etvp.add_implies(~p & q & ~s, r)
+        etvp.add_implies(~p & r & ~s, q)
+
+    return etvp
+
 def etv_solution(n, a, b, m):
     etvp = etv(n, a, b, m, flip_cup=True)
     if etvp.solve():

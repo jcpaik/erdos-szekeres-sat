@@ -5,12 +5,17 @@ import fire
 import lib.erdos as erdos
 from lib.util import binom
 
-def main(n, a, b, N, filename=None, signotope=False):
-    if signotope:
-        print("Signotope on")
-        inst = erdos.etv_signotope(n, a, b, N)
-    else:
-        inst = erdos.etv(n, a, b, N)
+etv = {
+    "": erdos.etv,
+    "signotope": erdos.etv_signotope,
+    "ax4": erdos.etv_ax4,
+    "ax4_interior": erdos.etv_ax4_interior,
+    "ax5": erdos.etv_ax5,
+    "semisimple": erdos.etv_semisimple,
+}
+
+def main(n, a, b, N, filename=None, order=""):
+    inst = etv[order](n, a, b, N)
     if not filename:
         filename = f"etv_{n}_{a}_{b}_{N}"
     if inst.solve(filename):
