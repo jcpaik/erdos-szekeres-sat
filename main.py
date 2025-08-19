@@ -19,7 +19,7 @@ etv = {
     "restrict": erdos.etv_signotope,
 }
 
-def main(n, a, b, N, filename=None, order=""):
+def main(n, a, b, N, cutoff, filename=None, order=""):
     inst = etv[order](n, a, b, N)
     if not filename:
         filename = f"etv_{n}_{a}_{b}_{N}"
@@ -31,6 +31,14 @@ def main(n, a, b, N, filename=None, order=""):
             r = v[(i, k, l)]
             s = v[(j, k, l)]
             inst.add_implies(p & q & ~s, r)
+
+    v = inst.v
+    for i, j, k in subsets(N, 3):
+        p = v[(i, j, k)]
+        if i < cutoff and j < cutoff and k >= cutoff:
+            inst.add(p)
+        if i < cutoff and j >= cutoff and k >= cutoff:
+            inst.add(~p)
 
     if inst.solve(filename):
         print("Solution found")
